@@ -16,6 +16,7 @@ public class MovieRowItem implements Parcelable{
     private double ratings; // store ratings of movie
     private String imageUrl; // store complete url
 
+
     public MovieRowItem(String title,String overview , String releaseDate,double ratings, String imageUrl){
         this.title = title;
         this.overview  = overview;
@@ -40,7 +41,7 @@ public class MovieRowItem implements Parcelable{
         return imageUrl;
     }
     public void setImageUrl(String imageBaseUrl){
-       imageUrl = MainActivityFragment.BASE_URL + imageBaseUrl;
+       imageUrl = ConstantData.BASE_URL_IMAGE + imageBaseUrl;
     }
     public String getReleaseDate(){
         return releaseDate;
@@ -55,28 +56,10 @@ public class MovieRowItem implements Parcelable{
         ratings = nRatings;
     }
 
-    @Override
-    public int describeContents(){
-        return  0;
-    }
-    @Override
-    public void writeToParcel(Parcel dest, int flags){
-        dest.writeString(title);
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
-        dest.writeDouble(ratings);
-        dest.writeString(imageUrl);
-    }
     public MovieRowItem(){
 
     }
-    private MovieRowItem(Parcel in){
-        title = in.readString();
-        overview = in.readString();
-        releaseDate = in.readString();
-        ratings = in.readDouble();
-        imageUrl = in.readString();
-    }
+
     //creater
     public static final Parcelable.Creator<MovieRowItem> CREATER =
             new Parcelable.Creator<MovieRowItem>(){
@@ -91,5 +74,39 @@ public class MovieRowItem implements Parcelable{
             return new MovieRowItem[size];
         }
 
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.overview);
+        dest.writeString(this.releaseDate);
+        dest.writeDouble(this.ratings);
+        dest.writeString(this.imageUrl);
+    }
+
+    protected MovieRowItem(Parcel in) {
+        this.title = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
+        this.ratings = in.readDouble();
+        this.imageUrl = in.readString();
+    }
+
+    public static final Creator<MovieRowItem> CREATOR = new Creator<MovieRowItem>() {
+        @Override
+        public MovieRowItem createFromParcel(Parcel source) {
+            return new MovieRowItem(source);
+        }
+
+        @Override
+        public MovieRowItem[] newArray(int size) {
+            return new MovieRowItem[size];
+        }
     };
 }

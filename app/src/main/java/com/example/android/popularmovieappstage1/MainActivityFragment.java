@@ -22,6 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import android.content.Intent;
 import android.widget.AdapterView;
+import android.os.Parcelable;
+import android.os.Parcel;
+import butterknife.ButterKnife;
+import butterknife.Bind;
+import butterknife.OnItemClick;
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -30,7 +35,9 @@ public class MainActivityFragment extends Fragment {
     CustomMovieAdapter customMovieAdapter;
     ArrayList<MovieRowItem> movieRowItemsList;
     String sort_type="popularity";
-    final static String BASE_URL = "http://image.tmdb.org/t/p/w342"; // BASE_URL to fetch movie data
+    @Bind(R.id.gridview_movies) GridView gridView;
+
+    //final static String BASE_URL = "http://image.tmdb.org/t/p/w342"; // BASE_URL to fetch movie data
     public MainActivityFragment() {
     }
     @Override
@@ -40,6 +47,7 @@ public class MainActivityFragment extends Fragment {
     }
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
     }
     private void updateMovie(String sort_type){
@@ -63,13 +71,17 @@ public class MainActivityFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         //fetch movie by ratings
         if(id == R.id.action_sort_by_ratings){
-            sort_type = "TOP_RATED";
+            sort_type = getString(R.string.pref_sort_ratings);
             updateMovie(sort_type);
-            return  true;
+            return true;
         }
         //fetch movie by popularity
         if(id==R.id.action_sort_by_popularity){
-            sort_type="popularity";
+            sort_type=getString(R.string.pref_sort_popular);
+            updateMovie(sort_type);
+            return true;
+        }
+        if(id==R.id.action_refresh){
             updateMovie(sort_type);
             return true;
         }
@@ -82,30 +94,26 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         movieRowItemsList = new ArrayList<>();
 
-        //initialize custom adapter object
-        customMovieAdapter = new CustomMovieAdapter(getActivity(),
-                R.layout.list_movie_forecast,
-               new ArrayList<MovieRowItem>());
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movies);
-        gridView.setAdapter(customMovieAdapter);
-        //OnItemClick event handle
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieRowItem movieRowItem = (MovieRowItem) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getActivity(),MovieDetailActivity.class)
-             /*   .putExtra("name", movieRowItem.getTitle())
-                .putExtra("url", movieRowItem.getImageUrl())
-                .putExtra("ratings",movieRowItem.getRatings())
-                .putExtra("releaseDate", movieRowItem.getReleaseDate())
-                .putExtra("overview",movieRowItem.getOverview());*/
-                .putExtra("com.example.android.popularmovieappstage1.movieRowItem",movieRowItem);
-                startActivity(intent);
-            }
-        });
+        ButterKnife.bind(this,rootView);
+        setUpAdapter();
         updateMovie(sort_type);
         return rootView;
+    }
+    private void setUpAdapter(){
+        //initialize main activity with custom adapter object with grid view
+        customMovieAdapter= new CustomMovieAdapter(getActivity(),R.layout.list_movie_forecast,movieRowItemsList);
+        gridView.setAdapter(customMovieAdapter);
+    }
+    @OnItemClick(R.id.gridview_movies)
+    void onItemClick(int position){
+        MovieRowItem movieRowItem = (MovieRowItem) movieRowItemsList.get(position);
+        Intent intent = new Intent(getActivity(),MovieDetailActivity.class)
+                .putExtra("movieRowItem",movieRowItem);
+        startActivity(intent);
+
+
     }
 /*
     * User defined method for background activity like making url and
@@ -118,14 +126,14 @@ public class MainActivityFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader bufferedReader = null;
             String moviesDetailStr = null;
-            final String BASE_URL = "http://api.themoviedb.org/3";
             final String DISCOVER = "/discover";
             final String MOVIE = "/movie";
             final String SORT_BY = "?sort_by=" + params[0] + ".desc";
             final String API_KEY = "&api_key=";
             //final String API_KEY_VALUE = buildConfig.MOVIE_API_KEY;
             final String API_KEY_VALUE = "1f0f081607bc4bce8419e47eeb04fa99";
-            String completeUrl = BASE_URL + DISCOVER + MOVIE + SORT_BY + API_KEY + API_KEY_VALUE;
+            String completeUrl = ConstantData.BASE_URL + DISCOVER + MOVIE + SORT_BY + API_KEY + API_KEY_VALUE;
+
 
             try {
                 URL url = new URL(completeUrl);
@@ -205,8 +213,13 @@ public class MainActivityFragment extends Fragment {
                 customMovieAdapter.clear();
                 for(MovieRowItem movieData : all_movies){
                     customMovieAdapter.add(movieData);
+
                 }
                 customMovieAdapter.notifyDataSetChanged();
+                for(MovieRowItem movie : all_movies){
+                    movieRowItemsList.add(movie);
+                }
+
             }
         }
 

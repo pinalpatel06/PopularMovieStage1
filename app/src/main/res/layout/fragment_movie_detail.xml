@@ -36,13 +36,21 @@
             android:layout_marginTop="10dp"
             android:layout_below="@+id/movieTitle"/>
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/movieRatings"
             android:textSize="20dp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/movieReleaseDate"/>
+        <ImageView
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:id="@+id/ratingImg"
+            android:src="@drawable/rating"
+            android:layout_toRightOf="@id/movieRatings"
+            android:layout_below="@id/movieReleaseDate"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

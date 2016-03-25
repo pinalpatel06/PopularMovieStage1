@@ -4,4 +4,13 @@
     <string name="title_activity_movie_detail">Movie Detail Activity</string>
     <string name="action_sort_by_ratings">Sort By Ratings</string>
     <string name="action_sort_by_Popularity">Sort By Popularity</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_share">Share</string>
+
+
+    <!-- fetch movie on rating basis preference [CHAR LIMIT=NONE] -->
+    <string name="pref_sort_ratings" translatable="false">vote_average</string>
+
+    <!-- fetch movie on popularity basis preference [CHAR LIMIT=NONE] -->
+    <string name="pref_sort_popular" translatable="false">popularity</string>
 </resources>

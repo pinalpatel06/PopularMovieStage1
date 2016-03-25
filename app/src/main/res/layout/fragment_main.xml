@@ -12,6 +12,8 @@ tools:context="com.example.android.popularmovieappstage1.MainActivityFragment">
     android:id="@+id/gridview_movies"
     android:numColumns="2"
     android:layout_marginTop="10dp"
-    android:fadeScrollbars="true">
+    android:fadeScrollbars="true"
+    android:horizontalSpacing="10dp"
+    android:verticalSpacing="10dp">
 </GridView>
 </RelativeLayout>
